@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+############ ddl.parms  ########################################
+BODY                           : ON
+COLLATION_CLAUSE               : NEVER
+CONSTRAINTS                    : ON
+CONSTRAINTS_AS_ALTER           : ON
+EMIT_SCHEMA                    : ON
+FORCE                          : ON
+INHERIT                        : ON
+INSERT                         : ON
+OID                            : ON
+PARTITIONING                   : ON
+PRETTY                         : ON
+REF_CONSTRAINTS                : ON
+SEGMENT_ATTRIBUTES             : ON
+SIZE_BYTE_KEYWORD              : ON
+SPECIFICATION                  : ON
+SQLTERMINATOR                  : ON
+STORAGE                        : ON
+TABLESPACE                     : ON
+
+############ lb.parameters ########################################
+basecommand                    : lb
+command                        : generate-schema
+database-changelog-table-name  : DATABASECHANGELOG
+fail-on-error                  : false
+grants                         : true
+labels                         : Baseline
+log                            : false
+replace                        : true
+runalways                      : false
+runonchange                    : true
+split                          : true
+sqlclversion                   : 23.3.0.0
+synonyms                       : true
+############ End Parameters #######################################
+-->
+<databaseChangeLog 
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <include file="table/oramon_memusage_table.xml"/> 
+  <include file="table/oramon_exec_per_seconds_table.xml"/> 
+  <include file="table/oramon_wait_events_table.xml"/> 
+  <include file="table/oramon_db_table.xml"/> 
+  <include file="table/oramon_sga_memory_table.xml"/> 
+  <include file="table/oramon_cpuusage_table.xml"/> 
+  <include file="table/oramon_open_cursors_table.xml"/> 
+  <include file="table/oramon_top_sql_table.xml"/> 
+  <include file="table/oramon_buffer_hit_ratio_table.xml"/> 
+  <include file="table/oramon_logons_table.xml"/> 
+  <include file="table/oramon_buffer_pin_get_hit_ratio_table.xml"/> 
+  <include file="table/oramon_sga_table.xml"/> 
+  <include file="package_spec/oramon_pkg_package_spec.xml"/> 
+  <include file="db_link/xepdb1_droplet_db_link.xml"/> 
+  <include file="package_body/oramon_pkg_package_body.xml"/> 
+  <include file="job/run_collect_job.xml"/> 
+  <include file="job/auto_statspack_collect_job_job.xml"/> 
+  <include file="job/auto_collect_stats_job.xml"/> 
+</databaseChangeLog> 

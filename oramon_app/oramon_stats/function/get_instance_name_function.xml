@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="c002c9c8ce767880864a8313d8aaa8be28990846" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createOracleFunction objectName="GET_INSTANCE_NAME" objectType="FUNCTION" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  CREATE OR REPLACE EDITIONABLE FUNCTION "ORAMON_STATS"."GET_INSTANCE_NAME" 
+return varchar2 as
+
+ lv_retval varchar2(30);
+
+begin
+
+  with type_of_instance as
+  (
+  select case sys_context('USERENV', 'CON_ID')
+              when '1' then 'CDB' else 'PDB' end
+         as cdb_or_pdb
+  from   dual
+  )
+  ,cdb_instance as
+  (
+  select instance_name as instance_name
+  from v$instance
+  ) 
+  ,pdb_instance as
+  (
+  select name as instance_name
+  from v$pdbs
+  ) 
+  select case cdb_or_pdb
+           when 'PDB' then
+             pdb_instance.instance_name
+           when 'CDB' then
+             cdb_instance.instance_name
+         end instance_name into lv_retval
+  from type_of_instance
+       ,cdb_instance
+       ,pdb_instance;
+
+  return lv_retval;
+
+end get_instance_name;
+]]></n0:source>
+		</n0:createOracleFunction>
+	</changeSet>
+</databaseChangeLog>

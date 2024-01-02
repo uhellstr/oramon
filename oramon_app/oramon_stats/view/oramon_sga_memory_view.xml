@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="305e785d3aff020fc05581bfb4d1d4855a1fb946" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createSxmlObject objectName="ORAMON_SGA_MEMORY" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
+   <SCHEMA>ORAMON_STATS</SCHEMA>
+   <NAME>ORAMON_SGA_MEMORY</NAME>
+   <DEFAULT_COLLATION>USING_NLS_COMP</DEFAULT_COLLATION>
+   <COL_LIST>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_ID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>NAME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>BVAL</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>HOST_NAME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>INSTANCE_NAME</NAME>
+      </COL_LIST_ITEM>
+   </COL_LIST>
+   <SUBQUERY>with db as
+(
+select d.dbid            dbid
+      , d.name            db_name
+      , i.instance_number inst_num
+      , i.instance_name   inst_name
+   from v$database d,
+        v$instance i
+)
+select b.snap_id
+      ,snap.snap_time
+      ,e.name
+      , b.value                                            bval
+      ,di.host_name
+      ,(select get_instance_name from dual) as instance_name
+from stats$sga b
+inner join stats$sga e
+on e.snap_id = b.snap_id
+inner join perfstat.stats$database_instance di
+on b.dbid = di.dbid
+inner join db
+on db.dbid = b.dbid
+inner join stats$snapshot snap
+on b.snap_id= snap.snap_id
+where e.dbid            = db.dbid
+  and e.instance_number = db.inst_num
+  and b.dbid            = db.dbid
+  and b.instance_number = db.inst_num
+  and b.name            = e.name
+  and snap.snap_time between trunc(sysdate-30) and sysdate
+order by b.snap_id,e.name</SUBQUERY>
+</VIEW>]]></n0:source>
+		</n0:createSxmlObject>
+	</changeSet>
+</databaseChangeLog>

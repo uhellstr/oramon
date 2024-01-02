@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+############ ddl.parms  ########################################
+BODY                           : ON
+COLLATION_CLAUSE               : NEVER
+CONSTRAINTS                    : ON
+CONSTRAINTS_AS_ALTER           : ON
+EMIT_SCHEMA                    : ON
+FORCE                          : ON
+INHERIT                        : ON
+INSERT                         : ON
+OID                            : ON
+PARTITIONING                   : ON
+PRETTY                         : ON
+REF_CONSTRAINTS                : ON
+SEGMENT_ATTRIBUTES             : ON
+SIZE_BYTE_KEYWORD              : ON
+SPECIFICATION                  : ON
+SQLTERMINATOR                  : ON
+STORAGE                        : ON
+TABLESPACE                     : ON
+
+############ lb.parameters ########################################
+basecommand                    : lb
+command                        : generate-schema
+database-changelog-table-name  : DATABASECHANGELOG
+fail-on-error                  : false
+grants                         : true
+labels                         : Baseline
+log                            : false
+replace                        : true
+runalways                      : false
+runonchange                    : true
+split                          : true
+sqlclversion                   : 23.3.0.0
+synonyms                       : true
+############ End Parameters #######################################
+-->
+<databaseChangeLog 
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <include file="view/oramon_cpuusage_view.xml"/> 
+  <include file="view/oramon_memusage_view.xml"/> 
+  <include file="view/oramon_logons_view.xml"/> 
+  <include file="view/oramon_open_cursors_view.xml"/> 
+  <include file="view/oramon_top_sql_view.xml"/> 
+  <include file="view/oramon_sga_view.xml"/> 
+  <include file="view/oramon_exec_per_seconds_view.xml"/> 
+  <include file="view/oramon_sga_memory_view.xml"/> 
+  <include file="view/oramon_wait_events_view.xml"/> 
+  <include file="view/oramon_buffer_hit_ratio_view.xml"/> 
+  <include file="view/ormon_buffer_hit_ratio_view.xml"/> 
+  <include file="view/oramon_buffer_pin_get_hit_ratio_view.xml"/> 
+  <include file="view/oramon_exec_parse_time_view.xml"/> 
+  <include file="function/get_instance_name_function.xml"/> 
+</databaseChangeLog> 

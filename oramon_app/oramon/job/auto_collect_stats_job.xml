@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="1c7a1c2dc2370ba31f176531e847311250b46beb" author="(ORAMON)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createOracleJob objectName="AUTO_COLLECT_STATS" objectType="JOB" ownerName="ORAMON"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  
+BEGIN 
+dbms_scheduler.disable1_calendar_check();
+dbms_scheduler.create_schedule('AUTO_COLLECT_STATS',TO_TIMESTAMP_TZ('26-DEC-2023 12.00.00,000000000 AM EUROPE/STOCKHOLM','DD-MON-RRRR HH.MI.SSXFF AM TZR','NLS_DATE_LANGUAGE=english'),
+'FREQ=DAILY;BYHOUR=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23;BYMINUTE=0,10,20,30,40,50;BYSECOND=0;',
+NULL,
+'Scheduler for collecting statspack data from several sources.'
+);
+COMMIT; 
+END; 
+]]></n0:source>
+		</n0:createOracleJob>
+	</changeSet>
+</databaseChangeLog>

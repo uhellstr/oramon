@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="8714807e1739e62761d98bccdc604e74027c557b" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createSxmlObject objectName="ORAMON_LOGONS" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
+   <SCHEMA>ORAMON_STATS</SCHEMA>
+   <NAME>ORAMON_LOGONS</NAME>
+   <DEFAULT_COLLATION>USING_NLS_COMP</DEFAULT_COLLATION>
+   <COL_LIST>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_ID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>VALUE</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>HOST_NAME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>INSTANCE_NAME</NAME>
+      </COL_LIST_ITEM>
+   </COL_LIST>
+   <SUBQUERY>select snap.snap_id
+       ,to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time
+       ,sys.value
+       ,di.host_name
+       ,(select get_instance_name from dual) as instance_name
+from stats$sysstat sys
+inner join stats$snapshot snap
+on sys.snap_id= snap.snap_id
+inner join perfstat.stats$database_instance di
+on snap.dbid = di.dbid
+where  sys.name            = 'logons current'
+  and sys.dbid   = snap.dbid
+  and sys.instance_number = snap.instance_number
+  and snap.snap_time between trunc(sysdate-30) and sysdate
+order by snap_time</SUBQUERY>
+</VIEW>]]></n0:source>
+		</n0:createSxmlObject>
+	</changeSet>
+</databaseChangeLog>

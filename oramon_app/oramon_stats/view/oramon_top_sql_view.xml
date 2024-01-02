@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="ac29613f6b39d646f9bf8d4ba4bc95e4c67a9be3" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createSxmlObject objectName="ORAMON_TOP_SQL" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
+   <SCHEMA>ORAMON_STATS</SCHEMA>
+   <NAME>ORAMON_TOP_SQL</NAME>
+   <DEFAULT_COLLATION>USING_NLS_COMP</DEFAULT_COLLATION>
+   <COL_LIST>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_ID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>LAST_ACTIVE_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>SQL_ID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>TEXT_SUBSET</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>EXECUTIONS</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>APPLICATION_WAIT_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>CONCURRENCY_WAIT_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>CLUSTER_WAIT_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>USER_IO_WAIT_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>ELAPSED_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>ELAPSED_TIME/EXECUTIONS</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>HOST_NAME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>INSTANCE_NAME</NAME>
+      </COL_LIST_ITEM>
+   </COL_LIST>
+   <SUBQUERY>select snap_id
+       ,last_active_time
+       ,sql_id
+       ,text_subset
+       ,executions
+       ,application_wait_time
+       ,concurrency_wait_time
+       ,cluster_wait_time
+       ,user_io_wait_time
+       ,elapsed_time
+       ,"ELAPSED_TIME/EXECUTIONS"
+       ,host_name
+       ,(select get_instance_name from dual) as instance_name
+from (
+            select ss.snap_id
+                ,ss.last_active_time
+                ,ss.sql_id
+                ,ss.text_subset
+                ,ss.executions
+                ,ss.application_wait_time
+                ,ss.concurrency_wait_time
+                ,ss.cluster_wait_time
+                ,ss.user_io_wait_time
+                ,ss.elapsed_time
+                ,ss.elapsed_time/executions as "ELAPSED_TIME/EXECUTIONS"
+                ,di.host_name
+            from stats$sql_summary ss
+            inner join perfstat.stats$database_instance di
+            on ss.dbid = di.dbid
+            where
+                ss.last_active_time >= trunc(sysdate)
+                and ss.last_active_time &#60;=  sysdate
+                and ss.executions > 0
+            order by "ELAPSED_TIME/EXECUTIONS" desc
+        ) 
+where rownum &#60;=10 order by last_active_time asc</SUBQUERY>
+</VIEW>]]></n0:source>
+		</n0:createSxmlObject>
+	</changeSet>
+</databaseChangeLog>

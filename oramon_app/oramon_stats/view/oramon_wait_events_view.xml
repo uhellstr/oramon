@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="0bf2a6fc4e1fd789314c26e1de1a6b7aeace1379" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createSxmlObject objectName="ORAMON_WAIT_EVENTS" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
+   <SCHEMA>ORAMON_STATS</SCHEMA>
+   <NAME>ORAMON_WAIT_EVENTS</NAME>
+   <DEFAULT_COLLATION>USING_NLS_COMP</DEFAULT_COLLATION>
+   <COL_LIST>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_ID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>EVENT</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>DIFF_VALUE</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>HOST_NAME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>INSTANCE_NAME</NAME>
+      </COL_LIST_ITEM>
+   </COL_LIST>
+   <SUBQUERY>select
+  snap_id
+  ,snap_time
+  ,event
+  ,round((value - pre_value) / 1000000, 2) diff_value
+  ,host_name
+  ,(select get_instance_name from dual) as instance_name
+from
+(
+select snap.snap_id
+       ,to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time
+       , event
+       , event.time_waited_micro value
+       , lag(event.time_waited_micro) over(partition by snap.dbid, snap.instance_number, event.event order by snap.snap_id) as pre_value
+       ,di.host_name
+from perfstat.stats$system_event event
+inner join perfstat.stats$snapshot     snap
+on event.snap_id = snap.snap_id
+inner join perfstat.stats$database_instance di
+on snap.dbid = di.dbid
+where event.dbid = snap.dbid
+  and event.instance_number = snap.instance_number
+  and snap.snap_time between trunc(sysdate-30) and sysdate
+  and not exists (
+        select 1
+        from v$event_name idle
+        where idle.event_id = event.event_id
+          and wait_class = 'Idle'
+  )
+  and not exists (
+        select 1
+        from stats$idle_event idle
+        where idle.event = event.event
+  )
+union all
+    select snap.snap_id
+    , to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time
+    , 'CPU time'                                    event
+    , sys.value / 100 * 1000000                     value
+    , ( lag(sys.value) over(partition by snap.dbid, snap.instance_number, snap.startup_time order by snap.snap_id)) / 100 * 1000000 pre_value
+    , di.host_name
+    from perfstat.stats$sysstat  sys
+    inner join perfstat.stats$snapshot snap
+    on sys.snap_id = snap.snap_id
+    inner join perfstat.stats$database_instance di
+    on snap.dbid = di.dbid
+    where  sys.name = 'CPU used by this session'
+      and sys.dbid = snap.dbid
+      and sys.instance_number = snap.instance_number
+      and snap.snap_time between trunc(sysdate-30) and sysdate
+)
+where (( value - pre_value ) > 1000000
+   or event = 'CPU time' )
+  and pre_value is not null
+order by snap_id, event</SUBQUERY>
+</VIEW>]]></n0:source>
+		</n0:createSxmlObject>
+	</changeSet>
+</databaseChangeLog>

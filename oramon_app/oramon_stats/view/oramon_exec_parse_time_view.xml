@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="cf105ead03ba412f331daf195b5678ac645aa4b8" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createSxmlObject objectName="ORAMON_EXEC_PARSE_TIME" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
+   <SCHEMA>ORAMON_STATS</SCHEMA>
+   <NAME>ORAMON_EXEC_PARSE_TIME</NAME>
+   <DEFAULT_COLLATION>USING_NLS_COMP</DEFAULT_COLLATION>
+   <COL_LIST>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>EXECUTION_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>PARSE_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>RELOAD</NAME>
+      </COL_LIST_ITEM>
+   </COL_LIST>
+   <SUBQUERY>select snap_time
+      ,to_char(CPU_used_by_this_session,'9999999999999990.99') execution_time
+      ,to_char(parse_time_cpu,'9999999999999990.99') parse_time
+      ,to_char(case when (parse_time_elapsed - parse_time_cpu) &#60; 0 then 0 else (parse_time_elapsed - parse_time_cpu) end,'9999999999999990.99') reload
+from
+(
+select to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time ,sys.name
+, ROUND((sys.value - (lag( sys.value ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time,sys.name order by snap.snap_id )))/100
+/((snap.snap_time - (lag( snap.snap_time ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time,sys.name order by snap.snap_id ))) * 24 * 60 * 60) *60,2) diff_value
+from stats$sysstat sys,stats$snapshot snap
+where sys.snap_id= snap.snap_id
+and sys.dbid   = snap.dbid
+and sys.instance_number = snap.instance_number
+and sys.name in ('parse time elapsed','parse time cpu','CPU used by this session')
+and snap.snap_time between trunc(sysdate-30) and sysdate
+)
+pivot (max(diff_value) for name in ('parse time elapsed'             parse_time_elapsed
+                                    ,'parse time cpu'      parse_time_cpu
+                                    ,'CPU used by this session'  CPU_used_by_this_session
+                                   )
+)
+order by snap_time</SUBQUERY>
+</VIEW>]]></n0:source>
+		</n0:createSxmlObject>
+	</changeSet>
+</databaseChangeLog>

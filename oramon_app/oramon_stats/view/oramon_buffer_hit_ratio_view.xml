@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="c0022b5cfc3b83eff198359c7ada729ad1fd62f7" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createSxmlObject objectName="ORAMON_BUFFER_HIT_RATIO" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
+   <SCHEMA>ORAMON_STATS</SCHEMA>
+   <NAME>ORAMON_BUFFER_HIT_RATIO</NAME>
+   <DEFAULT_COLLATION>USING_NLS_COMP</DEFAULT_COLLATION>
+   <COL_LIST>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_ID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>SNAP_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>BUFFER_HIT</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>HOST_NAME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>INSTANCE_NAME</NAME>
+      </COL_LIST_ITEM>
+   </COL_LIST>
+   <SUBQUERY>select snap_id
+       ,snap_time
+       ,to_char(1-(physical_reads_cache/(consistent_gets_from_cache + db_block_gets_from_cache + recovery_block_gets_from_cache)),'0.000') buffer_hit 
+       ,host_name
+       ,(select get_instance_name from dual) as instance_name
+from
+(
+select snap.snap_id
+       ,to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time 
+       ,sys.name
+       , sys.value - (lag( sys.value ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time,sys.name order by snap.snap_id )) diff_value
+       ,di.host_name
+from perfstat.stats$sysstat sys
+inner join perfstat.stats$snapshot snap
+on    sys.snap_id= snap.snap_id
+inner join perfstat.stats$database_instance di
+on snap.dbid = di.dbid
+where sys.dbid   = snap.dbid
+and sys.instance_number = snap.instance_number
+and sys.name in ('physical reads cache','consistent gets from cache','db block gets from cache', 'recovery block gets from cache')
+and snap.snap_time between trunc(sysdate-30) and sysdate
+)
+pivot (max(diff_value) for name in ('physical reads cache'             physical_reads_cache
+                                    ,'consistent gets from cache'      consistent_gets_from_cache
+                                    ,'db block gets from cache'        db_block_gets_from_cache
+                                    , 'recovery block gets from cache' recovery_block_gets_from_cache
+                                   )
+)
+order by snap_id</SUBQUERY>
+</VIEW>]]></n0:source>
+		</n0:createSxmlObject>
+	</changeSet>
+</databaseChangeLog>
