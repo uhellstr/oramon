@@ -5,7 +5,7 @@
 	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
 	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-	<changeSet id="cea60908a50360bcc6778f8605f7363da5f54834" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+	<changeSet id="e93aaaf00abc4f3213a11c84acf3df5a64cb1abe" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
 		<n0:createSxmlObject objectName="ORAMON_EXEC_PER_SECONDS" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
 			<n0:source><![CDATA[
   <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
@@ -43,7 +43,9 @@ from
 select snap.snap_id
        , to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time
        , sys.value - (lag( sys.value ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id )) diff_value
-       ,(snap.snap_time - (lag( snap.snap_time ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id ))) * 24 * 60 * 60 diff_sec
+       ,case (snap.snap_time - (lag( snap.snap_time ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id ))) * 24 * 60 * 60 
+         when 0 then -1
+        end diff_sec
        ,di.host_name
 from stats$sysstat sys
 inner join stats$snapshot snap

@@ -11,7 +11,9 @@ from
 select snap.snap_id
        ,to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time 
        ,sys.name
-       , sys.value - (lag( sys.value ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time,sys.name order by snap.snap_id )) diff_value
+       , case sys.value - (lag( sys.value ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time,sys.name order by snap.snap_id )) 
+          when 0 then -1
+         end diff_value
        ,di.host_name
 from perfstat.stats$sysstat sys
 inner join perfstat.stats$snapshot snap
