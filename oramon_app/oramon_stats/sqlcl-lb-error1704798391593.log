@@ -1,0 +1,187 @@
+
+######## ERROR SUMMARY ##################
+Run date:    Tue Jan 09 12:06:31 CET 2024
+Error cnt:1
+
+----------------------------
+File #1:  view/oramon_cpuusage_view.xml
+Errors :1
+
+Error :1
+liquibase.exception.DatabaseException: Error starting at line : 1 in command -
+CREATE OR REPLACE FORCE EDITIONABLE VIEW "ORAMON_CPUUSAGE" 
+ ( "SNAP_ID", "SNAP_TIME", "LOAD", "PCT_BUSY", "PCT_USER", "PCT_SYS", "PCT_IOWT", "PCT_CPUWT", "HOST_NAME", "INSTANCE_NAME"
+  )  AS 
+  select
+  snap_id
+, snap_time
+, round(load) load
+, round(100 * busy_time /(busy_time + idle_time),2) pct_busy
+, round(100 * user_time /(busy_time + idle_time),2) pct_user
+, round(100 * sys_time /(busy_time + idle_time),2) pct_sys
+, round(100 * iowt_time /(busy_time + idle_time),2)  pct_iowt
+, round(100 * cpuwt_time /(busy_time + idle_time),2) pct_cpuwt
+, host_name 
+, (select get_instance_name from dual) as instance_name
+from
+  (
+    select
+      snap_id
+    , snap_time
+    , load
+    , decode(prev_busyt
+             , - 1
+             , to_number(null)
+             , busyt - prev_busyt) busy_time
+    , decode(prev_idlet
+             , - 1
+             , to_number(null)
+             , idlet - prev_idlet) idle_time
+    , decode(prev_usert
+             , - 1
+             , to_number(null)
+             , usert - prev_usert) user_time
+    , decode(prev_syst
+             , - 1
+             , to_number(null)
+             , syst - prev_syst)   sys_time
+    , decode(prev_iowt
+             , - 1
+             , to_number(null)
+             , iowt - prev_iowt)   iowt_time
+    , decode(prev_cpuwt
+             , - 1
+             , to_number(null)
+             , cpuwt - prev_cpuwt) cpuwt_time
+    , host_name         
+    from
+      (
+        select -- lag
+          snap_id
+        , load
+        , snap_time
+        , busyt
+        , ( lag(busyt, 1, - 1)
+              over(
+            order by
+              snap_id asc
+              ) ) prev_busyt
+        , idlet
+        , ( lag(idlet, 1, - 1)
+              over(
+            order by
+              snap_id asc
+              ) ) prev_idlet
+        , usert
+        , ( lag(usert, 1, - 1)
+              over(
+            order by
+              snap_id asc
+              ) ) prev_usert
+        , syst
+        , ( lag(syst, 1, - 1)
+              over(
+            order by
+              snap_id asc
+              ) ) prev_syst
+        , iowt
+        , ( lag(iowt, 1, - 1)
+              over(
+            order by
+              snap_id asc
+              ) ) prev_iowt
+        , cpuwt
+        , ( lag(cpuwt, 1, - 1)
+              over(
+            order by
+              snap_id asc
+              ) ) prev_cpuwt
+        , host_name
+        from
+          ( (
+            select
+              s.snap_id
+            , sn.stat_name
+            , to_char(ss.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time
+            , s.value
+            , di.host_name
+            from perfstat.stats$osstat     s
+            inner join perfstat.stats$osstatname sn
+            on sn.osstat_id = s.osstat_id
+            inner join perfstat.stats$snapshot   ss
+            on ss.snap_id = s.snap_id 
+               and ss.dbid = s.dbid 
+               and ss.instance_number = s.instance_number
+            inner join perfstat.stats$database_instance di
+            on s.dbid = di.dbid    
+            where sn.stat_name in ( 'LOAD', 'IDLE_TIME', 'BUSY_TIME', 'USER_TIME', 'SYS_TIME'
+                                  , 'IOWAIT_TIME', 'CPU_WAIT_TIME' )
+Error report -
+ORA-00907: missing right parenthesis
+00907. 00000 -  "missing right parenthesis"
+*Document: YES
+*Cause:    A left parenthesis was entered without a closing
+           right parenthesis, or there was unrecognized information in the
+           parentheses. All parentheses must be entered in pairs.
+*Action:   Correct the syntax and retry the statement.
+	at oracle.dbtools.raptor.liquibase.util.QueryUtils.runSqlReturnResult(QueryUtils.java:221)
+	at liquibase.executor.jvm.SqlClExecutor.execute(SqlClExecutor.java:90)
+	at liquibase.database.AbstractJdbcDatabase.execute(AbstractJdbcDatabase.java:1270)
+	at liquibase.database.AbstractJdbcDatabase.executeStatements(AbstractJdbcDatabase.java:1252)
+	at liquibase.changelog.ChangeSet.execute(ChangeSet.java:685)
+	at liquibase.changelog.visitor.UpdateVisitor.visit(UpdateVisitor.java:56)
+	at liquibase.changelog.ChangeLogIterator$2.lambda$null$0(ChangeLogIterator.java:115)
+	at liquibase.Scope.lambda$child$0(Scope.java:180)
+	at liquibase.Scope.child(Scope.java:189)
+	at liquibase.Scope.child(Scope.java:179)
+	at liquibase.Scope.child(Scope.java:158)
+	at liquibase.changelog.ChangeLogIterator$2.lambda$run$1(ChangeLogIterator.java:114)
+	at liquibase.Scope.lambda$child$0(Scope.java:180)
+	at liquibase.Scope.child(Scope.java:189)
+	at liquibase.Scope.child(Scope.java:179)
+	at liquibase.Scope.child(Scope.java:158)
+	at liquibase.Scope.child(Scope.java:243)
+	at liquibase.changelog.ChangeLogIterator$2.run(ChangeLogIterator.java:95)
+	at liquibase.Scope.lambda$child$0(Scope.java:180)
+	at liquibase.Scope.child(Scope.java:189)
+	at liquibase.Scope.child(Scope.java:179)
+	at liquibase.Scope.child(Scope.java:158)
+	at liquibase.Scope.child(Scope.java:243)
+	at liquibase.Scope.child(Scope.java:247)
+	at liquibase.changelog.ChangeLogIterator.run(ChangeLogIterator.java:67)
+	at liquibase.Liquibase.lambda$null$0(Liquibase.java:289)
+	at liquibase.Scope.lambda$child$0(Scope.java:180)
+	at liquibase.Scope.child(Scope.java:189)
+	at liquibase.Scope.child(Scope.java:179)
+	at liquibase.Scope.child(Scope.java:158)
+	at liquibase.Scope.child(Scope.java:243)
+	at liquibase.Liquibase.lambda$update$1(Liquibase.java:288)
+	at liquibase.Scope.lambda$child$0(Scope.java:180)
+	at liquibase.Scope.child(Scope.java:189)
+	at liquibase.Scope.child(Scope.java:179)
+	at liquibase.Scope.child(Scope.java:158)
+	at liquibase.Liquibase.runInScope(Liquibase.java:2445)
+	at liquibase.Liquibase.update(Liquibase.java:235)
+	at liquibase.Liquibase.update(Liquibase.java:220)
+	at oracle.dbtools.raptor.liquibase.core.CommandGenerator.lambda$UpdateCommand$30(CommandGenerator.java:1292)
+	at liquibase.Scope.lambda$child$0(Scope.java:180)
+	at liquibase.Scope.child(Scope.java:189)
+	at liquibase.Scope.child(Scope.java:179)
+	at liquibase.Scope.child(Scope.java:158)
+	at oracle.dbtools.raptor.liquibase.core.CommandGenerator.UpdateCommand(CommandGenerator.java:1287)
+	at oracle.dbtools.raptor.scriptrunner.commands.liquibase.LbCommand.handleEvent(LbCommand.java:364)
+	at oracle.dbtools.raptor.newscriptrunner.CommandRegistry.fireListeners(CommandRegistry.java:449)
+	at oracle.dbtools.raptor.newscriptrunner.ScriptRunner.run(ScriptRunner.java:241)
+	at oracle.dbtools.raptor.newscriptrunner.ScriptExecutor.run(ScriptExecutor.java:370)
+	at oracle.dbtools.raptor.newscriptrunner.ScriptExecutor.run(ScriptExecutor.java:255)
+	at oracle.dbtools.raptor.newscriptrunner.SQLPLUS.runExecuteFile(SQLPLUS.java:1767)
+	at oracle.dbtools.raptor.newscriptrunner.SQLPLUS.run(SQLPLUS.java:185)
+	at oracle.dbtools.raptor.newscriptrunner.ScriptRunner.runSQLPLUS(ScriptRunner.java:456)
+	at oracle.dbtools.raptor.newscriptrunner.ScriptRunner.run(ScriptRunner.java:277)
+	at oracle.dbtools.raptor.newscriptrunner.ScriptExecutor.run(ScriptExecutor.java:370)
+	at oracle.dbtools.raptor.newscriptrunner.ScriptExecutor.run(ScriptExecutor.java:255)
+	at oracle.dbtools.raptor.scriptrunner.cmdline.SqlCli.processLine(SqlCli.java:1189)
+	at oracle.dbtools.raptor.scriptrunner.cmdline.SqlCli.runSqlcl(SqlCli.java:1370)
+	at oracle.dbtools.raptor.scriptrunner.cmdline.SqlCli.main(SqlCli.java:350)
+
+----------------------------
