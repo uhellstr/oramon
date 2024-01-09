@@ -9,35 +9,54 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "ORAMON_STATS"."ORAMON_BUFFER_PIN_GET_H
        ,(select get_instance_name from dual) as instance_name
 from
 (
+select snap_id
+      ,snap_time
+      ,diff_pins
+      ,diff_pinhits
+      ,diff_gets
+      ,diff_gethits
+      ,host_name
+from
+(
 select snap.snap_id
        , to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time
-       , case lc.pinssum - (lag( lc.pinssum ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id )) 
-           when 0 then -1
-         end diff_pins
+       , lc.pinssum - (lag( lc.pinssum ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id )) diff_pins
        , lc.pnhitssum - (lag( lc.pnhitssum ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id )) diff_pinhits
-       , case lc.getsum - (lag( lc.getsum ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id ))
-           when 0 then -1
-         end diff_gets
+       , lc.getsum - (lag( lc.getsum ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id )) diff_gets
        , lc.gethitssum - (lag( lc.gethitssum ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id )) diff_gethits
        , di.host_name
 from
 (
- select snap_id
-        ,dbid
-        ,instance_number
-        ,sum(pins) pinssum
-        ,sum(pinhits) pnhitssum
-        ,sum(gets) getsum
-        ,sum(gethits) gethitssum
- from perfstat.stats$librarycache 
- group by snap_id,dbid,instance_number
-) lc
+select snap_id
+       ,snap_time
+       ,dbid
+       ,instance_number
+       ,pinssum
+       ,pnhitssum
+       ,getsum
+       ,gethitssum
+from
+(
+select stl.snap_id
+       ,pss.snap_time
+       ,stl.dbid
+       ,stl.instance_number
+       ,sum(stl.pins) pinssum
+       ,sum(stl.pinhits) pnhitssum
+       ,sum(stl.gets) getsum
+       ,sum(stl.gethits) gethitssum
+from perfstat.stats$librarycache stl  
+inner join perfstat.stats$snapshot pss
+on    stl.snap_id= pss.snap_id
+group by stl.snap_id,pss.snap_time,stl.dbid,stl.instance_number
+order by snap_id
+)) lc
 inner join perfstat.stats$snapshot snap
-on    lc.snap_id= snap.snap_id
+on    lc.snap_id = snap.snap_id
 inner join perfstat.stats$database_instance di
-on snap.dbid = di.dbid
-where lc.dbid   = snap.dbid
-  and lc.instance_number = snap.instance_number
-  and snap.snap_time between trunc(sysdate-30) and sysdate
+on lc.dbid = di.dbid
+where lc.instance_number = di.instance_number
+  and lc.snap_time between trunc(sysdate-30) and sysdate
 )
-order by snap_time
+order by snap_id
+) where diff_pins > 0

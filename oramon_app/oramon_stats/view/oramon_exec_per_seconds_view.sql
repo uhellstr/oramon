@@ -9,12 +9,17 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "ORAMON_STATS"."ORAMON_EXEC_PER_SECONDS
        ,(select get_instance_name from dual) as instance_name
 from
 (
+select snap_id
+       ,snap_time
+       ,diff_value
+       ,diff_sec
+       ,host_name
+from
+(
 select snap.snap_id
        , to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time
        , sys.value - (lag( sys.value ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id )) diff_value
-       ,case (snap.snap_time - (lag( snap.snap_time ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id ))) * 24 * 60 * 60 
-         when 0 then -1
-        end diff_sec
+       , (snap.snap_time - (lag( snap.snap_time ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id ))) * 24 * 60 * 60 diff_sec
        ,di.host_name
 from stats$sysstat sys
 inner join stats$snapshot snap
@@ -25,5 +30,7 @@ where sys.name            = 'execute count'
   and sys.dbid   = snap.dbid
   and sys.instance_number = snap.instance_number
   and snap.snap_time between trunc(sysdate-30) and sysdate
+) where (diff_value is not null or diff_sec is not null)
+    and diff_value > 0
 )
 order by snap_id

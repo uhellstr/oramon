@@ -7,6 +7,15 @@ select snap_id
        ,(select get_instance_name from dual) as instance_name
 from
 (
+select snap_id
+      ,snap_time
+      ,diff_pins
+      ,diff_pinhits
+      ,diff_gets
+      ,diff_gethits
+      ,host_name
+from
+(
 select snap.snap_id
        , to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time
        , lc.pinssum - (lag( lc.pinssum ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time order by snap.snap_id )) diff_pins
@@ -47,4 +56,5 @@ on lc.dbid = di.dbid
 where lc.instance_number = di.instance_number
   and lc.snap_time between trunc(sysdate-30) and sysdate
 )
-order by snap_id;
+order by snap_id
+) where diff_pins > 0;

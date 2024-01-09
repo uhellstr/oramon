@@ -6,11 +6,14 @@ return varchar2 as
 
 begin
 
+  begin
   with type_of_instance as
   (
   select case sys_context('USERENV', 'CON_ID')
-              when '1' then 'CDB' else 'PDB' end
-         as cdb_or_pdb
+              when '0' then 'CDB' 
+              when '1' then 'CDB' 
+              else 'PDB' 
+         end cdb_or_pdb
   from   dual
   )
   ,cdb_instance as
@@ -32,6 +35,20 @@ begin
   from type_of_instance
        ,cdb_instance
        ,pdb_instance;
+
+  exception
+    when no_data_found then null;
+  end;
+
+  dbms_output.put_line('cdb_or_pdb lv_retval = '||lv_retval);
+
+  -- standalone , no multitenant
+  if lv_retval is null then
+    select instance_name into lv_retval
+    from v$instance;
+  end if;
+
+  dbms_output.put_line('standalone = '||lv_retval);
 
   return lv_retval;
 

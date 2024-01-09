@@ -5,7 +5,7 @@
 	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
 	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-	<changeSet id="c002c9c8ce767880864a8313d8aaa8be28990846" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+	<changeSet id="9d281f09dcd8355d806b9b0519cf59a44961dd96" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
 		<n0:createOracleFunction objectName="GET_INSTANCE_NAME" objectType="FUNCTION" ownerName="ORAMON_STATS"  replaceIfExists="true" >
 			<n0:source><![CDATA[
   CREATE OR REPLACE EDITIONABLE FUNCTION "ORAMON_STATS"."GET_INSTANCE_NAME" 
@@ -15,11 +15,14 @@ return varchar2 as
 
 begin
 
+  begin
   with type_of_instance as
   (
   select case sys_context('USERENV', 'CON_ID')
-              when '1' then 'CDB' else 'PDB' end
-         as cdb_or_pdb
+              when '0' then 'CDB' 
+              when '1' then 'CDB' 
+              else 'PDB' 
+         end cdb_or_pdb
   from   dual
   )
   ,cdb_instance as
@@ -42,10 +45,23 @@ begin
        ,cdb_instance
        ,pdb_instance;
 
+  exception
+    when no_data_found then null;
+  end;
+
+  dbms_output.put_line('cdb_or_pdb lv_retval = '||lv_retval);
+
+  -- standalone , no multitenant
+  if lv_retval is null then
+    select instance_name into lv_retval
+    from v$instance;
+  end if;
+
+  dbms_output.put_line('standalone = '||lv_retval);
+
   return lv_retval;
 
-end get_instance_name;
-]]></n0:source>
+end get_instance_name;]]></n0:source>
 		</n0:createOracleFunction>
 	</changeSet>
 </databaseChangeLog>

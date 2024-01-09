@@ -28,7 +28,7 @@ where sys.name            = 'execute count'
   and sys.dbid   = snap.dbid
   and sys.instance_number = snap.instance_number
   and snap.snap_time between trunc(sysdate-30) and sysdate
-) where diff_value is not null
-  or diff_sec is not null
+) where (diff_value is not null or diff_sec is not null)
+    and diff_value > 0
 )
 order by snap_id;
