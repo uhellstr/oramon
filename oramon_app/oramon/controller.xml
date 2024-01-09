@@ -57,7 +57,4 @@ synonyms                       : true
   <include file="package_spec/oramon_pkg_package_spec.xml"/> 
   <include file="db_link/xepdb1_droplet_db_link.xml"/> 
   <include file="package_body/oramon_pkg_package_body.xml"/> 
-  <include file="job/run_collect_job.xml"/> 
-  <include file="job/auto_statspack_collect_job_job.xml"/> 
-  <include file="job/auto_collect_stats_job.xml"/> 
 </databaseChangeLog> 
