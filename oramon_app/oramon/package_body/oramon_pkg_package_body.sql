@@ -621,6 +621,402 @@
   end get_oramon_buffer_pin_get_hit_ratio;
   
   --****************************************************************************
+  
+    procedure get_oramon_top_sqls
+    (
+      p_in_dblink in varchar2
+    )
+  /*
+  --******************************************************
+  --*                                                                                                        
+  --*    Created by:     Ulf Hellstrom, EpicoTech AB                         
+  --*    Date:           2023-12-07      
+  --*    Version:        1.0                                                        
+  --*    Updated by:    
+  --*    Description:   Collect Top SQLs from statspack      
+  --*                   from several database instances
+  --* events collected are:
+  --* [elapsed_time | cpu_time | buffer_gets | disk_reads | 
+  --*  executions | parse_calls | max_sharable_mem | max_version_count] 
+  --*
+  --******************************************************
+  */    
+  as
+
+    type top_rec is table of oramon_top_sqls%rowtype;
+    l_top top_rec;
+    
+    
+    lv_stmt_wait clob := q'[select
+                             instance_number
+                             , dbid
+                             , b_snap_id
+                             , e_snap_id
+                             , b_snap_time
+                             , e_snap_time
+                             , interval_min
+                             , dbtimemin
+                             , aas
+                             , hv
+                             , elapsed_time_sec
+                             , executions
+                             , elapsed_per_exec_sec
+                             , percent_of_dbtime_used
+                             , cpu_time_sec
+                             , cpu_time_ms_per_exec
+                             , physical_reads
+                             , physical_reads_per_execution
+                             , buffer_gets
+                             , gets_per_execution
+                             , rows_processed
+                             , rows_processed_per_execution
+                             , parse_calls
+                             , max_sharable_mem_kb
+                             , last_sharable_mem_kb
+                             , max_version_count
+                             , last_version_count
+                             , delta_version_count
+                             , cluster_wait_time_sec
+                             , cwt_percent_of_elapsed_time
+                             , avg_hard_parse_time_ms
+                             , module
+                             , sql_text
+                             , event_name
+                             , instance_name
+                             , host_name
+                           from oramon_top_sqls_elapsed_time@{1}
+                           union all
+                           select
+                             instance_number
+                             , dbid
+                             , b_snap_id
+                             , e_snap_id
+                             , b_snap_time
+                             , e_snap_time
+                             , interval_min
+                             , dbtimemin
+                             , aas
+                             , hv
+                             , elapsed_time_sec
+                             , executions
+                             , elapsed_per_exec_sec
+                             , percent_of_dbtime_used
+                             , cpu_time_sec
+                             , cpu_time_ms_per_exec
+                             , physical_reads
+                             , physical_reads_per_execution
+                             , buffer_gets
+                             , gets_per_execution
+                             , rows_processed
+                             , rows_processed_per_execution
+                             , parse_calls
+                             , max_sharable_mem_kb
+                             , last_sharable_mem_kb
+                             , max_version_count
+                             , last_version_count
+                             , delta_version_count
+                             , cluster_wait_time_sec
+                             , cwt_percent_of_elapsed_time
+                             , avg_hard_parse_time_ms
+                             , module
+                             , sql_text
+                             , event_name
+                             , instance_name
+                             , host_name
+                           from oramon_top_sqls_cpu_time@{1}
+                           union all
+                           select
+                             instance_number
+                             , dbid
+                             , b_snap_id
+                             , e_snap_id
+                             , b_snap_time
+                             , e_snap_time
+                             , interval_min
+                             , dbtimemin
+                             , aas
+                             , hv
+                             , elapsed_time_sec
+                             , executions
+                             , elapsed_per_exec_sec
+                             , percent_of_dbtime_used
+                             , cpu_time_sec
+                             , cpu_time_ms_per_exec
+                             , physical_reads
+                             , physical_reads_per_execution
+                             , buffer_gets
+                             , gets_per_execution
+                             , rows_processed
+                             , rows_processed_per_execution
+                             , parse_calls
+                             , max_sharable_mem_kb
+                             , last_sharable_mem_kb
+                             , max_version_count
+                             , last_version_count
+                             , delta_version_count
+                             , cluster_wait_time_sec
+                             , cwt_percent_of_elapsed_time
+                             , avg_hard_parse_time_ms
+                             , module
+                             , sql_text
+                             , event_name
+                             , instance_name
+                             , host_name
+                           from oramon_top_sqls_buffer_gets@{1}                           
+                           union all
+                           select
+                             instance_number
+                             , dbid
+                             , b_snap_id
+                             , e_snap_id
+                             , b_snap_time
+                             , e_snap_time
+                             , interval_min
+                             , dbtimemin
+                             , aas
+                             , hv
+                             , elapsed_time_sec
+                             , executions
+                             , elapsed_per_exec_sec
+                             , percent_of_dbtime_used
+                             , cpu_time_sec
+                             , cpu_time_ms_per_exec
+                             , physical_reads
+                             , physical_reads_per_execution
+                             , buffer_gets
+                             , gets_per_execution
+                             , rows_processed
+                             , rows_processed_per_execution
+                             , parse_calls
+                             , max_sharable_mem_kb
+                             , last_sharable_mem_kb
+                             , max_version_count
+                             , last_version_count
+                             , delta_version_count
+                             , cluster_wait_time_sec
+                             , cwt_percent_of_elapsed_time
+                             , avg_hard_parse_time_ms
+                             , module
+                             , sql_text
+                             , event_name
+                             , instance_name
+                             , host_name
+                           from oramon_top_sqls_disk_reads@{1}
+                           union all
+                           select
+                             instance_number
+                             , dbid
+                             , b_snap_id
+                             , e_snap_id
+                             , b_snap_time
+                             , e_snap_time
+                             , interval_min
+                             , dbtimemin
+                             , aas
+                             , hv
+                             , elapsed_time_sec
+                             , executions
+                             , elapsed_per_exec_sec
+                             , percent_of_dbtime_used
+                             , cpu_time_sec
+                             , cpu_time_ms_per_exec
+                             , physical_reads
+                             , physical_reads_per_execution
+                             , buffer_gets
+                             , gets_per_execution
+                             , rows_processed
+                             , rows_processed_per_execution
+                             , parse_calls
+                             , max_sharable_mem_kb
+                             , last_sharable_mem_kb
+                             , max_version_count
+                             , last_version_count
+                             , delta_version_count
+                             , cluster_wait_time_sec
+                             , cwt_percent_of_elapsed_time
+                             , avg_hard_parse_time_ms
+                             , module
+                             , sql_text
+                             , event_name
+                             , instance_name
+                             , host_name
+                           from oramon_top_sqls_executions@{1}
+                           union all
+                           select
+                             instance_number
+                             , dbid
+                             , b_snap_id
+                             , e_snap_id
+                             , b_snap_time
+                             , e_snap_time
+                             , interval_min
+                             , dbtimemin
+                             , aas
+                             , hv
+                             , elapsed_time_sec
+                             , executions
+                             , elapsed_per_exec_sec
+                             , percent_of_dbtime_used
+                             , cpu_time_sec
+                             , cpu_time_ms_per_exec
+                             , physical_reads
+                             , physical_reads_per_execution
+                             , buffer_gets
+                             , gets_per_execution
+                             , rows_processed
+                             , rows_processed_per_execution
+                             , parse_calls
+                             , max_sharable_mem_kb
+                             , last_sharable_mem_kb
+                             , max_version_count
+                             , last_version_count
+                             , delta_version_count
+                             , cluster_wait_time_sec
+                             , cwt_percent_of_elapsed_time
+                             , avg_hard_parse_time_ms
+                             , module
+                             , sql_text
+                             , event_name
+                             , instance_name
+                             , host_name
+                           from oramon_top_sqls_parse_calls@{1}
+                           union all
+                           select
+                             instance_number
+                             , dbid
+                             , b_snap_id
+                             , e_snap_id
+                             , b_snap_time
+                             , e_snap_time
+                             , interval_min
+                             , dbtimemin
+                             , aas
+                             , hv
+                             , elapsed_time_sec
+                             , executions
+                             , elapsed_per_exec_sec
+                             , percent_of_dbtime_used
+                             , cpu_time_sec
+                             , cpu_time_ms_per_exec
+                             , physical_reads
+                             , physical_reads_per_execution
+                             , buffer_gets
+                             , gets_per_execution
+                             , rows_processed
+                             , rows_processed_per_execution
+                             , parse_calls
+                             , max_sharable_mem_kb
+                             , last_sharable_mem_kb
+                             , max_version_count
+                             , last_version_count
+                             , delta_version_count
+                             , cluster_wait_time_sec
+                             , cwt_percent_of_elapsed_time
+                             , avg_hard_parse_time_ms
+                             , module
+                             , sql_text
+                             , event_name
+                             , instance_name
+                             , host_name
+                           from oramon_top_sqls_max_sharable_mem@{1}
+                           union all
+                           select
+                             instance_number
+                             , dbid
+                             , b_snap_id
+                             , e_snap_id
+                             , b_snap_time
+                             , e_snap_time
+                             , interval_min
+                             , dbtimemin
+                             , aas
+                             , hv
+                             , elapsed_time_sec
+                             , executions
+                             , elapsed_per_exec_sec
+                             , percent_of_dbtime_used
+                             , cpu_time_sec
+                             , cpu_time_ms_per_exec
+                             , physical_reads
+                             , physical_reads_per_execution
+                             , buffer_gets
+                             , gets_per_execution
+                             , rows_processed
+                             , rows_processed_per_execution
+                             , parse_calls
+                             , max_sharable_mem_kb
+                             , last_sharable_mem_kb
+                             , max_version_count
+                             , last_version_count
+                             , delta_version_count
+                             , cluster_wait_time_sec
+                             , cwt_percent_of_elapsed_time
+                             , avg_hard_parse_time_ms
+                             , module
+                             , sql_text
+                             , event_name
+                             , instance_name
+                             , host_name
+                           from oramon_top_sqls_max_version_count@{1}]';
+    lv_stmt clob;
+
+  begin
+
+    lv_stmt := replace(lv_stmt_wait,'{1}',p_in_dblink);
+    --dbms_output.put_line(lv_stmt);
+    
+    execute immediate lv_stmt bulk collect into l_top;
+    
+    --dbms_output.put_line(l_sga.count);
+    
+    for i in 1..l_top.count loop
+      begin      
+        insert into oramon_top_sqls
+        values  (l_top(i).instance_number
+                 , l_top(i).dbid
+                 , l_top(i).b_snap_id
+                 , l_top(i).e_snap_id
+                 , l_top(i).b_snap_time
+                 , l_top(i).e_snap_time
+                 , l_top(i).interval_min
+                 , l_top(i).dbtimemin
+                 , l_top(i).aas
+                 , l_top(i).hv
+                 , l_top(i).elapsed_time_sec
+                 , l_top(i).executions
+                 , l_top(i).elapsed_per_exec_sec
+                 , l_top(i).percent_of_dbtime_used
+                 , l_top(i).cpu_time_sec
+                 , l_top(i).cpu_time_ms_per_exec
+                 , l_top(i).physical_reads
+                 , l_top(i).physical_reads_per_execution
+                 , l_top(i).buffer_gets
+                 , l_top(i).gets_per_execution
+                 , l_top(i).rows_processed
+                 , l_top(i).rows_processed_per_execution
+                 , l_top(i).parse_calls
+                 , l_top(i).max_sharable_mem_kb
+                 , l_top(i).last_sharable_mem_kb
+                 , l_top(i).max_version_count
+                 , l_top(i).last_version_count
+                 , l_top(i).delta_version_count
+                 , l_top(i).cluster_wait_time_sec
+                 , l_top(i).cwt_percent_of_elapsed_time
+                 , l_top(i).avg_hard_parse_time_ms
+                 , l_top(i).module
+                 , l_top(i).sql_text
+                 , l_top(i).event_name
+                 , l_top(i).instance_name
+                 , l_top(i).host_name);
+        commit;
+      exception when dup_val_on_index then
+        null;      
+      end;    
+    end loop;
+    
+  end get_oramon_top_sqls;
+  
+  --****************************************************************************
   -- Main starts here --
 
   procedure collect_statspack_stats as
@@ -635,6 +1031,7 @@
     get_oramon_wait_events(p_in_dblink => 'XEPDB1_DROPLET');
     get_oramon_buffer_hit_ratio(p_in_dblink => 'XEPDB1_DROPLET');
     get_oramon_buffer_pin_get_hit_ratio(p_in_dblink => 'XEPDB1_DROPLET');
+    get_oramon_top_sqls(p_in_dblink => 'XEPDB1_DROPLET');
   end collect_statspack_stats;
 
 end oramon_pkg;

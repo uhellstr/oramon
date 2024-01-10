@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="d1fdd8ae5b5f294a44d1cc11e987eb22acaa0f2e" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createSxmlObject objectName="ORAMON_TOP_SQLS_MAX_VERSION_COUNT" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
+   <SCHEMA>ORAMON_STATS</SCHEMA>
+   <NAME>ORAMON_TOP_SQLS_MAX_VERSION_COUNT</NAME>
+   <DEFAULT_COLLATION>USING_NLS_COMP</DEFAULT_COLLATION>
+   <COL_LIST>
+      <COL_LIST_ITEM>
+         <NAME>INSTANCE_NUMBER</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>DBID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>B_SNAP_ID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>E_SNAP_ID</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>B_SNAP_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>E_SNAP_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>INTERVAL_MIN</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>DBTIMEMIN</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>AAS</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>HV</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>ELAPSED_TIME_SEC</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>EXECUTIONS</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>ELAPSED_PER_EXEC_SEC</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>PERCENT_OF_DBTIME_USED</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>CPU_TIME_SEC</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>CPU_TIME_MS_PER_EXEC</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>PHYSICAL_READS</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>PHYSICAL_READS_PER_EXECUTION</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>BUFFER_GETS</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>GETS_PER_EXECUTION</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>ROWS_PROCESSED</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>ROWS_PROCESSED_PER_EXECUTION</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>PARSE_CALLS</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>MAX_SHARABLE_MEM_KB</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>LAST_SHARABLE_MEM_KB</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>MAX_VERSION_COUNT</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>LAST_VERSION_COUNT</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>DELTA_VERSION_COUNT</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>CLUSTER_WAIT_TIME_SEC</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>CWT_PERCENT_OF_ELAPSED_TIME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>AVG_HARD_PARSE_TIME_MS</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>MODULE</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>SQL_TEXT</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>EVENT_NAME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>INSTANCE_NAME</NAME>
+      </COL_LIST_ITEM>
+      <COL_LIST_ITEM>
+         <NAME>HOST_NAME</NAME>
+      </COL_LIST_ITEM>
+   </COL_LIST>
+   <SUBQUERY>select tops."INSTANCE_NUMBER",tops."DBID",tops."B_SNAP_ID",tops."E_SNAP_ID",tops."B_SNAP_TIME",tops."E_SNAP_TIME",tops."INTERVAL_MIN",tops."DBTIMEMIN",tops."AAS",tops."HV",tops."ELAPSED_TIME_SEC",tops."EXECUTIONS",tops."ELAPSED_PER_EXEC_SEC",tops."PERCENT_OF_DBTIME_USED",tops."CPU_TIME_SEC",tops."CPU_TIME_MS_PER_EXEC",tops."PHYSICAL_READS",tops."PHYSICAL_READS_PER_EXECUTION",tops."BUFFER_GETS",tops."GETS_PER_EXECUTION",tops."ROWS_PROCESSED",tops."ROWS_PROCESSED_PER_EXECUTION",tops."PARSE_CALLS",tops."MAX_SHARABLE_MEM_KB",tops."LAST_SHARABLE_MEM_KB",tops."MAX_VERSION_COUNT",tops."LAST_VERSION_COUNT",tops."DELTA_VERSION_COUNT",tops."CLUSTER_WAIT_TIME_SEC",tops."CWT_PERCENT_OF_ELAPSED_TIME",tops."AVG_HARD_PARSE_TIME_MS",tops."MODULE",tops."SQL_TEXT"
+       ,'max_version_count' as event_name
+       ,(select get_instance_name from dual) instance_name
+       ,di.host_name
+from table(get_top_sqls(p_start_time => to_char(trunc(sysdate-30),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'max_version_count')) tops
+inner join perfstat.stats$database_instance di
+on tops.dbid = di.dbid</SUBQUERY>
+</VIEW>]]></n0:source>
+		</n0:createSxmlObject>
+	</changeSet>
+</databaseChangeLog>

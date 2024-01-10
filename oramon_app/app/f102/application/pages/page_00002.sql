@@ -21,7 +21,7 @@ wwv_flow_imp_page.create_page(
 ,p_protection_level=>'C'
 ,p_page_component_map=>'04'
 ,p_last_updated_by=>'UHELLSTR'
-,p_last_upd_yyyymmddhh24miss=>'20240103104845'
+,p_last_upd_yyyymmddhh24miss=>'20240105111651'
 );
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(6204795274686746)
@@ -40,7 +40,8 @@ wwv_flow_imp_page.create_page_plug(
 ,p_plug_name=>'Memory Usage'
 ,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_imp.id(5804317599676220)
-,p_plug_display_sequence=>80
+,p_plug_display_sequence=>70
+,p_plug_new_grid_row=>false
 ,p_plug_source_type=>'NATIVE_JET_CHART'
 );
 wwv_flow_imp_page.create_jet_chart(
@@ -68,6 +69,7 @@ wwv_flow_imp_page.create_jet_chart(
 ,p_legend_rendered=>'on'
 ,p_legend_title=>'Memory Usage'
 ,p_legend_position=>'top'
+,p_time_axis_type=>'auto'
 );
 wwv_flow_imp_page.create_jet_chart_series(
  p_id=>wwv_flow_imp.id(6209098152695204)
@@ -209,7 +211,7 @@ wwv_flow_imp_page.create_page_plug(
 ,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
 ,p_component_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_imp.id(5804317599676220)
-,p_plug_display_sequence=>90
+,p_plug_display_sequence=>80
 ,p_plug_new_grid_row=>false
 ,p_plug_source_type=>'NATIVE_JET_CHART'
 );
@@ -448,7 +450,7 @@ wwv_flow_imp_page.create_page_plug(
 ,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
 ,p_component_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_imp.id(5804317599676220)
-,p_plug_display_sequence=>100
+,p_plug_display_sequence=>90
 ,p_plug_source_type=>'NATIVE_JET_CHART'
 );
 wwv_flow_imp_page.create_jet_chart(
@@ -546,7 +548,7 @@ wwv_flow_imp_page.create_page_plug(
 ,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
 ,p_component_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_imp.id(5804317599676220)
-,p_plug_display_sequence=>110
+,p_plug_display_sequence=>100
 ,p_plug_new_grid_row=>false
 ,p_plug_source_type=>'NATIVE_JET_CHART'
 );
@@ -674,8 +676,7 @@ wwv_flow_imp_page.create_page_plug(
 ,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
 ,p_component_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_imp.id(5804317599676220)
-,p_plug_display_sequence=>120
-,p_plug_new_grid_row=>false
+,p_plug_display_sequence=>60
 ,p_plug_source_type=>'NATIVE_JET_CHART'
 );
 wwv_flow_imp_page.create_jet_chart(
@@ -715,7 +716,7 @@ wwv_flow_imp_page.create_jet_chart_series(
 '  snap_id',
 ', snap_time',
 ', name',
-', bval',
+', (to_number(bval) / 1024 ) / 1024 as bval',
 ', host_name',
 ', instance_name',
 'from oramon_sga_memory',
@@ -744,7 +745,7 @@ wwv_flow_imp_page.create_jet_chart_series(
 '  snap_id',
 ', snap_time',
 ', name',
-', bval',
+', (to_number(bval) / 1024 ) / 1024 as bval',
 ', host_name',
 ', instance_name',
 'from oramon_sga_memory',
@@ -774,7 +775,7 @@ wwv_flow_imp_page.create_jet_chart_series(
 '  snap_id',
 ', snap_time',
 ', name',
-', bval',
+', (to_number(bval) / 1024 ) / 1024 as bval',
 ', host_name',
 ', instance_name',
 'from oramon_sga_memory',
@@ -804,7 +805,7 @@ wwv_flow_imp_page.create_jet_chart_series(
 '  snap_id',
 ', snap_time',
 ', name',
-', bval',
+', (to_number(bval) / 1024 ) / 1024 as bval',
 ', host_name',
 ', instance_name',
 'from oramon_sga_memory',
@@ -845,6 +846,7 @@ wwv_flow_imp_page.create_jet_chart_axis(
 ,p_chart_id=>wwv_flow_imp.id(6211714164695231)
 ,p_axis=>'y'
 ,p_is_rendered=>'on'
+,p_title=>'MB'
 ,p_format_type=>'decimal'
 ,p_decimal_places=>0
 ,p_format_scaling=>'none'
@@ -861,7 +863,7 @@ wwv_flow_imp_page.create_page_plug(
 ,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
 ,p_component_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_imp.id(5804317599676220)
-,p_plug_display_sequence=>130
+,p_plug_display_sequence=>120
 ,p_plug_new_grid_row=>false
 ,p_plug_source_type=>'NATIVE_JET_CHART'
 );

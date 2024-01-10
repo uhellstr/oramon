@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="f328f8c2b30b8ae5fda252990c611913244e67a6" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+		<n0:createOracleTypeSpec objectName="T_TOP_SQL_TAB" objectType="TYPE_SPEC" ownerName="ORAMON_STATS"  replaceIfExists="true" >
+			<n0:source><![CDATA[
+  CREATE OR REPLACE EDITIONABLE TYPE "ORAMON_STATS"."T_TOP_SQL_TAB" is table of t_top_sql_row;
+]]></n0:source>
+		</n0:createOracleTypeSpec>
+	</changeSet>
+</databaseChangeLog>

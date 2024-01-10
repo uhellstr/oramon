@@ -1,0 +1,2 @@
+
+  CREATE OR REPLACE EDITIONABLE TYPE "ORAMON_STATS"."T_TOP_SQL_TAB" is table of t_top_sql_row;
