@@ -5,7 +5,7 @@
 	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
 	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-	<changeSet id="e558ab4858d368503dba02d73b8a08b3c5d109e4" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+	<changeSet id="e2b514b178d432ddf3cc63866c43819e7a29b3f0" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
 		<n0:createSxmlObject objectName="ORAMON_TOP_SQLS_MAX_SHARABLE_MEM" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
 			<n0:source><![CDATA[
   <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
@@ -126,7 +126,7 @@
        ,'max_sharable_mem' as event_name
        ,(select get_instance_name from dual) instance_name
        ,di.host_name
-from table(get_top_sqls(p_start_time => to_char(trunc(sysdate-30),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'max_sharable_mem')) tops
+from table(get_top_sqls(p_start_time => to_char(trunc(sysdate),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'max_sharable_mem')) tops
 inner join perfstat.stats$database_instance di
 on tops.dbid = di.dbid</SUBQUERY>
 </VIEW>]]></n0:source>

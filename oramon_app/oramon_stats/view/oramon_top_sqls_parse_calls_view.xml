@@ -5,7 +5,7 @@
 	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
 	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-	<changeSet id="c664b2ec66a083ddd22bc2a6a2d8ce5a39ee13e9" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+	<changeSet id="d9acaf01bc52df384cf3f6c13af225c4ccc83d46" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
 		<n0:createSxmlObject objectName="ORAMON_TOP_SQLS_PARSE_CALLS" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
 			<n0:source><![CDATA[
   <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
@@ -126,7 +126,7 @@
        ,'parse_calls' as event_name
        ,(select get_instance_name from dual) instance_name
        ,di.host_name
-from table(get_top_sqls(p_start_time => to_char(trunc(sysdate-30),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'parse_calls')) tops
+from table(get_top_sqls(p_start_time => to_char(trunc(sysdate),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'parse_calls')) tops
 inner join perfstat.stats$database_instance di
 on tops.dbid = di.dbid</SUBQUERY>
 </VIEW>]]></n0:source>

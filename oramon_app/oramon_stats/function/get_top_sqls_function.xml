@@ -5,7 +5,7 @@
 	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
 	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-	<changeSet id="3dabe7b0a2abd1128cb0640f97d42922b759267e" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+	<changeSet id="3fc1cabeded79f71022e7c68b799d610dfb63a1f" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
 		<n0:createOracleFunction objectName="GET_TOP_SQLS" objectType="FUNCTION" ownerName="ORAMON_STATS"  replaceIfExists="true" >
 			<n0:source><![CDATA[
   CREATE OR REPLACE EDITIONABLE FUNCTION "ORAMON_STATS"."GET_TOP_SQLS" 
@@ -29,14 +29,14 @@ return t_top_sql_tab as
   top_n_sql         constant number           := 65;
   num_rows_per_hash constant number           := 1;
   top_pct_sql       constant number           := 1.0;
-  
+
   l_dbid            stats$database_instance.dbid%type;
   l_instance_number stats$database_instance.instance_number%type;
   l_db_name         stats$database_instance.instance_name%type;
   l_instance_name   stats$database_instance.instance_name%type;
   l_host_name       stats$database_instance.host_name%type;
-  
-  
+
+
   cursor cur_get_dbid is
   select distinct 
          dbid            dbbid
@@ -477,7 +477,7 @@ return t_top_sql_tab as
           topn.old_hash_value, 
           st.piece;
 begin
-  
+
   open cur_get_dbid;
   fetch cur_get_dbid into l_dbid
                           ,l_instance_number
@@ -485,7 +485,7 @@ begin
                           ,l_instance_name
                           ,l_host_name; 
   close cur_get_dbid;
-  
+
   for rec in cur_get_top_sqls loop
     l_tab.extend;
     l_tab(l_tab.last) := t_top_sql_row(  rec.instance_number
@@ -523,9 +523,9 @@ begin
                                         ,rec.sql_text
                                       );
   end loop;
-  
+
   return l_tab;
-  
+
 end get_top_sqls;]]></n0:source>
 		</n0:createOracleFunction>
 	</changeSet>

@@ -5,7 +5,7 @@
 	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
 	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-	<changeSet id="23f21cd87802030a50b9af28597c1dbaf4b9e56b" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+	<changeSet id="d02710e40d15c3e02e5a075407dbe7d8fb4288c6" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
 		<n0:createSxmlObject objectName="ORAMON_TOP_SQLS_ELAPSED_TIME" objectType="VIEW" ownerName="ORAMON_STATS"  replaceIfExists="true" >
 			<n0:source><![CDATA[
   <VIEW xmlns="http://xmlns.oracle.com/ku" version="1.0">
@@ -126,7 +126,7 @@
        ,'elapsed_time' as event_name
        ,(select get_instance_name from dual) instance_name
        ,di.host_name
-from table(get_top_sqls(p_start_time => to_char(trunc(sysdate-30),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'elapsed_time')) tops
+from table(get_top_sqls(p_start_time => to_char(trunc(sysdate),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'elapsed_time')) tops
 inner join perfstat.stats$database_instance di
 on tops.dbid = di.dbid</SUBQUERY>
 </VIEW>]]></n0:source>

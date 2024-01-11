@@ -20,14 +20,14 @@ return t_top_sql_tab as
   top_n_sql         constant number           := 65;
   num_rows_per_hash constant number           := 1;
   top_pct_sql       constant number           := 1.0;
-  
+
   l_dbid            stats$database_instance.dbid%type;
   l_instance_number stats$database_instance.instance_number%type;
   l_db_name         stats$database_instance.instance_name%type;
   l_instance_name   stats$database_instance.instance_name%type;
   l_host_name       stats$database_instance.host_name%type;
-  
-  
+
+
   cursor cur_get_dbid is
   select distinct 
          dbid            dbbid
@@ -468,7 +468,7 @@ return t_top_sql_tab as
           topn.old_hash_value, 
           st.piece;
 begin
-  
+
   open cur_get_dbid;
   fetch cur_get_dbid into l_dbid
                           ,l_instance_number
@@ -476,7 +476,7 @@ begin
                           ,l_instance_name
                           ,l_host_name; 
   close cur_get_dbid;
-  
+
   for rec in cur_get_top_sqls loop
     l_tab.extend;
     l_tab(l_tab.last) := t_top_sql_row(  rec.instance_number
@@ -514,7 +514,7 @@ begin
                                         ,rec.sql_text
                                       );
   end loop;
-  
+
   return l_tab;
-  
+
 end get_top_sqls;

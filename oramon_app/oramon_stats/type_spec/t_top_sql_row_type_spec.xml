@@ -5,7 +5,7 @@
 	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
 	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-	<changeSet id="0b87ff85d611a2d2cae9530b74c94e6dbf4699f4" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+	<changeSet id="11ca4792824b6a2629c1931493e548cde6d67b78" author="(ORAMON_STATS)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
 		<n0:createOracleTypeSpec objectName="T_TOP_SQL_ROW" objectType="TYPE_SPEC" ownerName="ORAMON_STATS"  replaceIfExists="true" >
 			<n0:source><![CDATA[
   CREATE OR REPLACE EDITIONABLE TYPE "ORAMON_STATS"."T_TOP_SQL_ROW" as object (
@@ -42,8 +42,7 @@
 	avg_hard_parse_time_ms number, 
 	module varchar2(64 byte), 
 	sql_text varchar2(256 byte)
-);
-]]></n0:source>
+);]]></n0:source>
 		</n0:createOracleTypeSpec>
 	</changeSet>
 </databaseChangeLog>

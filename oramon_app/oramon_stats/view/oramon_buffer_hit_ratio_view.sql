@@ -8,12 +8,17 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "ORAMON_STATS"."ORAMON_BUFFER_HIT_RATIO
        ,(select get_instance_name from dual) as instance_name
 from
 (
+select snap_id
+      ,snap_time
+      ,name
+      ,diff_value
+      ,host_name
+from
+(
 select snap.snap_id
        ,to_char(snap.snap_time, 'RRRR-MM-DD HH24:MI:SS') snap_time 
        ,sys.name
-       , case sys.value - (lag( sys.value ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time,sys.name order by snap.snap_id )) 
-          when 0 then -1
-         end diff_value
+       , sys.value - (lag( sys.value ) over ( partition by snap.dbid,snap.instance_number,snap.startup_time,sys.name order by snap.snap_id )) diff_value 
        ,di.host_name
 from perfstat.stats$sysstat sys
 inner join perfstat.stats$snapshot snap
@@ -24,6 +29,8 @@ where sys.dbid   = snap.dbid
 and sys.instance_number = snap.instance_number
 and sys.name in ('physical reads cache','consistent gets from cache','db block gets from cache', 'recovery block gets from cache')
 and snap.snap_time between trunc(sysdate-30) and sysdate
+) 
+where diff_value is not null -- AVOID DIVIZION BY ZERO
 )
 pivot (max(diff_value) for name in ('physical reads cache'             physical_reads_cache
                                     ,'consistent gets from cache'      consistent_gets_from_cache

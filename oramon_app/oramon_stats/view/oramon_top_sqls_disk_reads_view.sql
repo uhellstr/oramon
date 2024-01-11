@@ -5,6 +5,6 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "ORAMON_STATS"."ORAMON_TOP_SQLS_DISK_RE
        ,'disk_reads' as event_name
        ,(select get_instance_name from dual) instance_name
        ,di.host_name
-from table(get_top_sqls(p_start_time => to_char(trunc(sysdate-30),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'disk_reads')) tops
+from table(get_top_sqls(p_start_time => to_char(trunc(sysdate),'RRRR-MM-DD HH24:MI'), p_end_time => to_char(sysdate,'RRRR-MM-DD HH24:MI'),p_top_n_by_attribute => 'disk_reads')) tops
 inner join perfstat.stats$database_instance di
 on tops.dbid = di.dbid
