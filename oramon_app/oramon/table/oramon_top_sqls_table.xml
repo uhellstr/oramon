@@ -5,7 +5,7 @@
 	xmlns:n0="http://www.oracle.com/xml/ns/dbchangelog-ext" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
 	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-	<changeSet id="d2a8af1c2e092503c41d0f319948264878905810" author="(ORAMON)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
+	<changeSet id="8747f69057aed94ec2a39746a8a6266d4539def1" author="(ORAMON)-Generated" failOnError="false"  labels="Baseline" runOnChange="true" runAlways="false"  >
 		<n0:createSxmlObject objectName="ORAMON_TOP_SQLS" objectType="TABLE" ownerName="ORAMON"  replaceIfExists="true" >
 			<n0:source><![CDATA[
   <TABLE xmlns="http://xmlns.oracle.com/ku" version="1.0">
@@ -186,6 +186,7 @@
             <DATATYPE>VARCHAR2</DATATYPE>
             <LENGTH>256</LENGTH>
             <COLLATE_NAME>USING_NLS_COMP</COLLATE_NAME>
+            <NOT_NULL></NOT_NULL>
             <ANNOTATION_LIST></ANNOTATION_LIST>
          </COL_LIST_ITEM>
          <COL_LIST_ITEM>
@@ -244,12 +245,15 @@
                <COL_LIST_ITEM>
                   <NAME>HOST_NAME</NAME>
                </COL_LIST_ITEM>
+               <COL_LIST_ITEM>
+                  <NAME>SQL_TEXT</NAME>
+               </COL_LIST_ITEM>
             </COL_LIST>
             <USING_INDEX>
                <INDEX_ATTRIBUTES>
                   <PCTFREE>10</PCTFREE>
                   <INITRANS>2</INITRANS>
-                  <MAXTRANS>159</MAXTRANS>
+                  <MAXTRANS>149</MAXTRANS>
                   <STORAGE>
                      <INITIAL>65536</INITIAL>
                      <NEXT>1048576</NEXT>

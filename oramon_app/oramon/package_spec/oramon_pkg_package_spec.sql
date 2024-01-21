@@ -5,4 +5,3 @@
   procedure collect_statspack_stats;
 
 end oramon_pkg;
-

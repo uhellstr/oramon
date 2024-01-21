@@ -35,8 +35,8 @@
 
     type cpuusage_rec is table of oramon_cpuusage%rowtype;
     l_cpuusage cpuusage_rec;
-    
-    
+
+
     lv_stmt_cpuusage clob := q'[select
                                  snap_id
                                  , snap_time
@@ -49,18 +49,18 @@
                                  , host_name
                                  , instance_name
                                from oramon_cpuusage@{1}]';
-                               
+
     lv_stmt clob;
 
   begin
 
     lv_stmt := replace(lv_stmt_cpuusage,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_cpuusage;
-    
+
     --dbms_output.put_line(l_memusage.count);
-    
+
     for i in 1..l_cpuusage.count loop
       begin      
         insert into oramon_cpuusage 
@@ -79,7 +79,7 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_cpuusage;
 
   --****************************************************************************
@@ -104,8 +104,8 @@
 
     type logons_rec is table of oramon_logons%rowtype;
     l_logons logons_rec;
-    
-    
+
+
     lv_stmt_logons clob := q'[select
                                 snap_id
                                 , snap_time
@@ -113,18 +113,18 @@
                                 , host_name
                                 , instance_name
                               from oramon_logons@{1}]';
-                               
+
     lv_stmt clob;
 
   begin
 
     lv_stmt := replace(lv_stmt_logons,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_logons;
-    
+
     --dbms_output.put_line(l_memusage.count);
-    
+
     for i in 1..l_logons.count loop
       begin      
         insert into oramon_logons 
@@ -138,9 +138,9 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_logons;
-  
+
   --****************************************************************************
 
   procedure get_oramon_exec_per_seconds
@@ -163,8 +163,8 @@
 
     type exec_rec is table of oramon_exec_per_seconds%rowtype;
     l_execs exec_rec;
-    
-    
+
+
     lv_stmt_execs   clob := q'[select
                                  snap_id
                                  , snap_time
@@ -179,11 +179,11 @@
 
     lv_stmt := replace(lv_stmt_execs,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_execs;
-    
+
     --dbms_output.put_line(l_execs.count);
-    
+
     for i in 1..l_execs.count loop
       begin      
         insert into oramon_exec_per_seconds 
@@ -198,7 +198,7 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_exec_per_seconds;
 
   --****************************************************************************
@@ -223,8 +223,8 @@
 
     type memusage_rec is table of oramon_memusage%rowtype;
     l_memusage memusage_rec;
-    
-    
+
+
     lv_stmt_memusage clob := q'[select snap_id
                          ,snap_time
                          ,physical_memory_mb
@@ -240,11 +240,11 @@
 
     lv_stmt := replace(lv_stmt_memusage,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_memusage;
-    
+
     --dbms_output.put_line(l_memusage.count);
-    
+
     for i in 1..l_memusage.count loop
       begin      
         insert into oramon_memusage 
@@ -261,7 +261,7 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_memusage;    
 
   --****************************************************************************
@@ -286,8 +286,8 @@
 
     type cursorusage_rec is table of oramon_open_cursors%rowtype;
     l_cursorusage cursorusage_rec;
-    
-    
+
+
     lv_stmt_cursorusage clob := q'[select
                                      snap_id
                                      , snap_time
@@ -301,11 +301,11 @@
 
     lv_stmt := replace(lv_stmt_cursorusage,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_cursorusage;
-    
+
     --dbms_output.put_line(l_cursorusage.count);
-    
+
     for i in 1..l_cursorusage.count loop
       begin      
         insert into oramon_open_cursors 
@@ -319,9 +319,9 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_cursor_usage;
-  
+
   --****************************************************************************
 
   procedure get_oramon_sga
@@ -344,8 +344,8 @@
 
     type sga_rec is table of oramon_sga%rowtype;
     l_sga sga_rec;
-    
-    
+
+
     lv_stmt_sga clob := q'[select
                              snap_id
                              , snap_time
@@ -360,11 +360,11 @@
 
     lv_stmt := replace(lv_stmt_sga,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_sga;
-    
+
     --dbms_output.put_line(l_cursorusage.count);
-    
+
     for i in 1..l_sga.count loop
       begin      
         insert into oramon_sga 
@@ -379,9 +379,9 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_sga;
-  
+
   --****************************************************************************
 
   procedure get_oramon_sga_memory
@@ -404,8 +404,8 @@
 
     type sga_rec is table of oramon_sga_memory%rowtype;
     l_sga sga_rec;
-    
-    
+
+
     lv_stmt_sga clob := q'[select
                              snap_id
                              , snap_time
@@ -420,11 +420,11 @@
 
     lv_stmt := replace(lv_stmt_sga,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_sga;
-    
+
     --dbms_output.put_line(l_sga.count);
-    
+
     for i in 1..l_sga.count loop
       begin      
         insert into oramon_sga_memory 
@@ -439,9 +439,9 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_sga_memory;
-  
+
   --****************************************************************************
 
   procedure get_oramon_wait_events
@@ -464,8 +464,8 @@
 
     type wait_rec is table of oramon_wait_events%rowtype;
     l_wait wait_rec;
-    
-    
+
+
     lv_stmt_wait clob := q'[select
                               snap_id
                               , snap_time
@@ -480,11 +480,11 @@
 
     lv_stmt := replace(lv_stmt_wait,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_wait;
-    
+
     --dbms_output.put_line(l_sga.count);
-    
+
     for i in 1..l_wait.count loop
       begin      
         insert into oramon_wait_events 
@@ -499,7 +499,7 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_wait_events;
 
   --****************************************************************************
@@ -524,8 +524,8 @@
 
     type buffer_rec is table of oramon_buffer_hit_ratio%rowtype;
     l_buffer buffer_rec;
-    
-    
+
+
     lv_stmt_wait clob := q'[select
                               snap_id
                               , snap_time
@@ -539,11 +539,11 @@
 
     lv_stmt := replace(lv_stmt_wait,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_buffer;
-    
+
     --dbms_output.put_line(l_sga.count);
-    
+
     for i in 1..l_buffer.count loop
       begin      
         insert into oramon_buffer_hit_ratio 
@@ -557,11 +557,11 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_buffer_hit_ratio;
-  
+
   --****************************************************************************
-  
+
   procedure get_oramon_buffer_pin_get_hit_ratio
     (
       p_in_dblink in varchar2
@@ -582,8 +582,8 @@
 
     type buffer_rec is table of oramon_buffer_pin_get_hit_ratio%rowtype;
     l_buffer buffer_rec;
-    
-    
+
+
     lv_stmt_wait clob := q'[select
                               snap_id
                               , snap_time
@@ -598,11 +598,11 @@
 
     lv_stmt := replace(lv_stmt_wait,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_buffer;
-    
+
     --dbms_output.put_line(l_sga.count);
-    
+
     for i in 1..l_buffer.count loop
       begin      
         insert into oramon_buffer_pin_get_hit_ratio
@@ -617,11 +617,11 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_buffer_pin_get_hit_ratio;
-  
+
   --****************************************************************************
-  
+
     procedure get_oramon_top_sqls
     (
       p_in_dblink in varchar2
@@ -645,8 +645,8 @@
 
     type top_rec is table of oramon_top_sqls%rowtype;
     l_top top_rec;
-    
-    
+
+
     lv_stmt_wait clob := q'[select
                              instance_number
                              , dbid
@@ -964,11 +964,11 @@
 
     lv_stmt := replace(lv_stmt_wait,'{1}',p_in_dblink);
     --dbms_output.put_line(lv_stmt);
-    
+
     execute immediate lv_stmt bulk collect into l_top;
-    
+
     --dbms_output.put_line(l_sga.count);
-    
+
     for i in 1..l_top.count loop
       begin      
         insert into oramon_top_sqls
@@ -1013,25 +1013,25 @@
         null;      
       end;    
     end loop;
-    
+
   end get_oramon_top_sqls;
-  
+
   --****************************************************************************
   -- Main starts here --
 
   procedure collect_statspack_stats as
   begin
-    get_oramon_memusage(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_cpuusage(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_exec_per_seconds(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_logons(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_cursor_usage(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_sga(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_sga_memory(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_wait_events(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_buffer_hit_ratio(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_buffer_pin_get_hit_ratio(p_in_dblink => 'XEPDB1_DROPLET');
-    get_oramon_top_sqls(p_in_dblink => 'XEPDB1_DROPLET');
+    get_oramon_memusage(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_cpuusage(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_exec_per_seconds(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_logons(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_cursor_usage(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_sga(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_sga_memory(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_wait_events(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_buffer_hit_ratio(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_buffer_pin_get_hit_ratio(p_in_dblink => 'ORAMON_STATS_ODIUTV');
+    get_oramon_top_sqls(p_in_dblink => 'ORAMON_STATS_ODIUTV');
   end collect_statspack_stats;
 
 end oramon_pkg;

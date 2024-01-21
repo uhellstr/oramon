@@ -44,6 +44,7 @@ synonyms                       : true
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
   <include file="type_spec/t_top_sql_row_type_spec.xml"/> 
   <include file="type_spec/t_top_sql_tab_type_spec.xml"/> 
+  <include file="view/oramon_explain_plans_view.xml"/> 
   <include file="view/oramon_logons_view.xml"/> 
   <include file="view/oramon_open_cursors_view.xml"/> 
   <include file="view/oramon_top_sql_view.xml"/> 
@@ -52,11 +53,11 @@ synonyms                       : true
   <include file="view/oramon_sga_memory_view.xml"/> 
   <include file="view/oramon_wait_events_view.xml"/> 
   <include file="view/oramon_top_daily_wait_events_view.xml"/> 
-  <include file="view/oramon_buffer_hit_ratio_view.xml"/> 
-  <include file="view/oramon_buffer_pin_get_hit_ratio_view.xml"/> 
-  <include file="view/oramon_exec_parse_time_view.xml"/> 
   <include file="view/oramon_cpuusage_view.xml"/> 
   <include file="view/oramon_memusage_view.xml"/> 
+  <include file="view/oramon_exec_parse_time_view.xml"/> 
+  <include file="view/oramon_buffer_hit_ratio_view.xml"/> 
+  <include file="view/oramon_buffer_pin_get_hit_ratio_view.xml"/> 
   <include file="function/get_top_sqls_function.xml"/> 
   <include file="view/oramon_top_sqls_max_version_count_view.xml"/> 
   <include file="view/oramon_top_sqls_cpu_time_view.xml"/> 
